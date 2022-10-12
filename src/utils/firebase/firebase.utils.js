@@ -3,6 +3,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  signInWithEmailAndPassword,
   GoogleAuthProvider,
 } from "firebase/auth";
 
@@ -41,6 +42,8 @@ export const createAuthorizedUserWithEmailAndPassword = async (
   email,
   password
 ) => {
+  if (!email || !password) return;
+
   const userCredentials = await createUserWithEmailAndPassword(
     authService,
     email,
@@ -60,9 +63,29 @@ export const signInUserWithGooglePopup = async () => {
   }
 };
 
+//------------------SIGN In With Email and Password---------------------
+
+export const signInuserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
+  try {
+    const signInResponse = await signInWithEmailAndPassword(
+      authService,
+      email,
+      password
+    );
+    return signInResponse;
+  } catch (e) {
+    if (e.code === "auth/wrong-password") {
+      alert("Email or Password is Incorrect");
+    } else if (e.code === "auth/user-not-found")
+      alert("No user with this email exists");
+    else console.log(e);
+  }
+};
+
 //----------------------Make User Documnent------------------------
 
-export const makeUserDocumentFromAuth = async (userAuth,additionalInfo) => {
+export const makeUserDocumentFromAuth = async (userAuth, additionalInfo) => {
   const userDocRef = doc(db, "users", userAuth.uid);
   // console.log(userDocRef);
 
@@ -78,7 +101,7 @@ export const makeUserDocumentFromAuth = async (userAuth,additionalInfo) => {
         displayName,
         email,
         createdAt: new Date(),
-        ...additionalInfo
+        ...additionalInfo,
       });
     } catch (error) {
       console.log(error.message);

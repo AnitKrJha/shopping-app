@@ -16,7 +16,7 @@ const SignUpForm = () => {
     confirmPassword: "",
   };
 
-  const [formFields, setFromFields] = useState(defaultFormFields);
+  const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
   //---------------------FORM SUBMIT HANDLE-------------------
@@ -34,7 +34,7 @@ const SignUpForm = () => {
       );
       console.log(user);
       const response = makeUserDocumentFromAuth(user, { displayName });
-      setFromFields(defaultFormFields);
+      setFormFields(defaultFormFields);
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         alert("EMAIL IS IN USE CANNOT SIGN UP WITH THIS EMAIL");
@@ -48,7 +48,7 @@ const SignUpForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFromFields({ ...formFields, [name]: value });
+    setFormFields({ ...formFields, [name]: value });
   };
 
   return (
