@@ -1,6 +1,6 @@
 import FormInput from "../FormInput/form-input.component";
 import Button from "../Button/button.component";
-import './sign-up-form.styles.scss'
+import "./sign-up-form.styles.scss";
 import { useState } from "react";
 
 import {
@@ -8,14 +8,13 @@ import {
   makeUserDocumentFromAuth,
 } from "../../utils/firebase/firebase.utils";
 
+const defaultFormFields = {
+  displayName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 const SignUpForm = () => {
-  const defaultFormFields = {
-    displayName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  };
-
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
@@ -32,7 +31,6 @@ const SignUpForm = () => {
         email,
         password
       );
-      console.log(user);
       const response = makeUserDocumentFromAuth(user, { displayName });
       setFormFields(defaultFormFields);
     } catch (error) {
@@ -90,7 +88,9 @@ const SignUpForm = () => {
           value={confirmPassword}
           onChange={handleChange}
         />
-        <Button buttonType={'inverted'} type="submit">Submit</Button>
+        <Button buttonType={"inverted"} type="submit">
+          Submit
+        </Button>
       </form>
     </div>
   );

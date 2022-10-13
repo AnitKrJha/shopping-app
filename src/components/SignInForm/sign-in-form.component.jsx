@@ -1,19 +1,19 @@
-import FormInput from "../FormInput/form-input.component";
-import Button from "../Button/button.component";
 import { FcGoogle } from "react-icons/fc";
 import "./sign-in-form.styles.scss";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import FormInput from "../FormInput/form-input.component";
+import Button from "../Button/button.component";
 import {
   signInUserWithGooglePopup,
   signInuserWithEmailAndPassword,
 } from "../../utils/firebase/firebase.utils";
 
-const SignInForm = () => {
-  const defaultFormFields = {
-    email: "",
-    password: "",
-  };
+const defaultFormFields = {
+  email: "",
+  password: "",
+};
 
+const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
@@ -24,7 +24,6 @@ const SignInForm = () => {
 
     try {
       const response = await signInuserWithEmailAndPassword(email, password);
-      console.log(response);
       setFormFields(defaultFormFields);
     } catch (error) {
       console.log(error);
@@ -46,7 +45,7 @@ const SignInForm = () => {
           label={"Email"}
           type="email"
           name="email"
-          id="email"
+          // id="email"
           value={email}
           onChange={handleChange}
         />
@@ -55,7 +54,7 @@ const SignInForm = () => {
           label={"Password"}
           type="password"
           name="password"
-          id="password"
+          // id="password"
           value={password}
           onChange={handleChange}
         />
@@ -64,12 +63,12 @@ const SignInForm = () => {
           <Button
             type="button"
             buttonType={"google"}
-            onClick={() => {
-              signInUserWithGooglePopup();
+            onClick={async () => {
+              await signInUserWithGooglePopup();
             }}
           >
             <span className="google-btn">
-              <FcGoogle fontSize={'1rem'}/>
+              <FcGoogle fontSize={"1rem"} />
               Sign In with Google
             </span>
           </Button>
