@@ -6,10 +6,20 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from "firebase/auth";
 
-import { getFirestore, getDoc, setDoc, doc } from "firebase/firestore";
+import {
+  getFirestore,
+  getDoc,
+  setDoc,
+  doc,
+  collection,
+  writeBatch,
+  query,
+  getDocs,
+  QuerySnapshot,
+} from "firebase/firestore";
 
 //------------------CONFIG FILES----------------------------
 
@@ -28,6 +38,40 @@ const app = initializeApp(FIREBASE_CONFIG); //initialize the Firebase app  - wit
 const authService = getAuth(app); // initialize the authServiceHandler for my app.
 const googleProvider = new GoogleAuthProvider(); //initialize the google service to provide authentication.
 const db = getFirestore();
+
+// -----------------Add Data to collection to firestore-------------------------
+
+export const addCollectionAndDocuments = async (
+  collectionName,
+  objectsToAdd
+) => {
+  const collectionRef = collection(db, collectionName);
+  const batch = writeBatch(db);
+
+  objectsToAdd.forEach((object) => {
+    const docRef = doc(collectionRef, object.title.toLowerCase());
+    batch.set(docRef, object);
+  });
+
+  await batch.commit();
+  console.log("done");
+};
+
+//---------------------------Get Data From Firestore------------------------------
+
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, "categories");
+  const q = query(collectionRef);
+
+  const querySnapshot = await getDocs(q);
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const { title, items } = docSnapshot.data();
+    acc[title.toLowerCase()] = items;
+    return acc;
+  }, {});
+
+  return categoryMap;
+};
 
 //------------------------SETTING UP SOME BEHAVIOURS OF THE GOOGLE POPUP-------------------
 
@@ -92,9 +136,9 @@ export const SignOutUser = async () => {
 
 //-------------------------------------------
 
-export const onAuthStateChangedListener =(callback)=>{
-  return onAuthStateChanged(authService,callback);
-}
+export const onAuthStateChangedListener = (callback) => {
+  return onAuthStateChanged(authService, callback);
+};
 
 //----------------------Make User Documnent------------------------
 
